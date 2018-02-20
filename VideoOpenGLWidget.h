@@ -3,7 +3,7 @@
 #include <QWidget>
 #include <QOpenGLWidget>
 #include "ui_VideoOpenGLWidget.h"
-
+#include <QImage>
 class VideoOpenGLWidget : public QOpenGLWidget
 {
 	Q_OBJECT
@@ -11,7 +11,9 @@ class VideoOpenGLWidget : public QOpenGLWidget
 public:
 	VideoOpenGLWidget(QWidget *parent = Q_NULLPTR);
 	~VideoOpenGLWidget();
-
+	void paintEvent(QPaintEvent *e);
+public slots:
+	void setVideoImage();
 private:
 	Ui::VideoOpenGLWidget ui;
 };

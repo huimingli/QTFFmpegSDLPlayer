@@ -2,13 +2,15 @@
 
 
 
-
+const static long long  MAX_AUDIOQ_SIZE = (5 * 16 * 1024);
+const static long long   MAX_VIDEOQ_SIZE = (5 * 256 * 1024);
 Media::Media()
 {
 	av_register_all();
 	pFormatCtx = nullptr;
 	audio = new Audio;
 	video = new Video;
+	readPacketsThread = new ReadPacketsThread;
 }
 Media *  Media::config() {
 	// Open input file
@@ -71,6 +73,44 @@ Media * Media::setMediaFile(char * filename)
 	return this;
 }
 
+bool Media::checkMediaSizeValid()
+{
+	Uint32 audioSize = this->audio->getAudioQueueSize();
+	Uint32 videoSize = this->video->getVideoQueueSize();
+	return (audioSize> MAX_AUDIOQ_SIZE || videoSize> MAX_VIDEOQ_SIZE);
+}
+
+int Media::getVideoStreamIndex()
+{
+	return video->getStreamIndex();
+}
+
+int Media::getAudioStreamIndex()
+{
+	return audio->getStreamIndex();
+}
+
+void Media::enqueueVideoPacket(const AVPacket packet)
+{
+	
+	video->enqueuePacket(packet);
+}
+
+void Media::enqueueAudioPacket(const AVPacket pkt)
+{
+	audio->enqueuePacket(pkt);
+}
+
+void Media::startReadPackets()
+{
+	readPacketsThread->start();
+}
+
+void Media::startReadVideoFrame()
+{
+	video->start();
+}
+
 Media::~Media()
 {
 	if (audio != nullptr)
@@ -78,4 +118,6 @@ Media::~Media()
 
 	if (video != nullptr)
 		delete video;
+	if (readPacketsThread != nullptr)
+		delete readPacketsThread;
 }

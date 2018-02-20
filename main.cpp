@@ -1,6 +1,7 @@
 #include "QTPlayer.h"
 #include <QtWidgets/QApplication>
 #include "Media.h"
+#include "DisplayMediaThread.h"
 #pragma comment(lib,"avformat.lib")
 #pragma comment(lib,"avutil.lib")
 #pragma comment(lib,"avcodec.lib")
@@ -13,7 +14,10 @@ int main(int argc, char *argv[])
 {
 	Media *media = Media::getInstance()
 		->setMediaFile("a.rmvb")->config();
-
+	media->startReadPackets();
+	media->startReadVideoFrame();
+	/*DisplayMediaThread *d = DisplayMediaThread::getInstance();
+	d->start();*/
 	QApplication a(argc, argv);
 	QTPlayer w;
 	w.show();

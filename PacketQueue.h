@@ -22,8 +22,8 @@ struct PacketQueue
 	QWaitCondition cond;
 
 	PacketQueue();
-	bool enQueue(const AVPacket *packet);
-	bool deQueue(AVPacket *packet, bool block);
+	bool enQueue(const AVPacket packet);
+	AVPacket deQueue();
 };
 
  

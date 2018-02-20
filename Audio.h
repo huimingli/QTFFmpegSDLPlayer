@@ -14,6 +14,8 @@ public:
 	void setStreamIndex(const int streamIndex);
 	AVCodecContext *audioContext;
 	AVStream *stream;
+	int getAudioQueueSize();
+	void enqueuePacket(const AVPacket pkt);
 private:
 	int streamIndex;
 	PacketQueue audiaPackets;

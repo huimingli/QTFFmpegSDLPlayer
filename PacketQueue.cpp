@@ -12,16 +12,12 @@ PacketQueue::PacketQueue()
  
 }
 
-bool PacketQueue::enQueue(const AVPacket *packet)
+bool PacketQueue::enQueue(const AVPacket packet)
 {
-	AVPacket *pkt = av_packet_alloc();
-	if (av_packet_ref(pkt, packet) < 0)
-		return false;
-
 	mutex.lock();
-	queue.push(*pkt);
+	queue.push(packet);
 
-	size += pkt->size;
+	size += packet.size;
 	nb_packets++;
 
 	cond.wakeOne();
@@ -29,11 +25,12 @@ bool PacketQueue::enQueue(const AVPacket *packet)
 	return true;
 }
 
-bool PacketQueue::deQueue(AVPacket *packet, bool block)
+AVPacket PacketQueue::deQueue()
 {
 	bool ret = false;
-
+	AVPacket pkt;
 	mutex.lock();
+	 
 	while (true)
 	{
 		/*if (quit)
@@ -44,31 +41,23 @@ bool PacketQueue::deQueue(AVPacket *packet, bool block)
 
 		if (!queue.empty())
 		{
-			if (av_packet_ref(packet, &queue.front()) < 0)
-			{
-				ret = false;
-				break;
-			}
-			AVPacket pkt = queue.front();
+			pkt = queue.front();
 
 			queue.pop();
-			av_packet_unref(&pkt);
+			size -= pkt.size;
+		 
 			nb_packets--;
-			size -= packet->size;
+			
 
 			ret = true;
 			break;
 		}
-		else if (!block)
-		{
-			ret = false;
-			break;
-		}
+	 
 		else
-		{
+		{			
 			cond.wait(&mutex);
 		}
 	}
 	mutex.unlock();
-	return ret;
+	return pkt;
 }

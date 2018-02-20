@@ -21,31 +21,27 @@ bool FrameQueue::enQueue(const AVFrame* frame)
 
 	nb_frames++;
 	
-	cond.notify_one();
+	cond.wakeOne();
 	mutex.unlock();
 	
 	return true;
 }
 
-bool FrameQueue::deQueue(AVFrame **frame)
+AVFrame * FrameQueue::deQueue()
 {
 	bool ret = true;
-
+	AVFrame *tmp;
 	mutex.lock();
 	while (true)
 	{
 		if (!queue.empty())
 		{
-			if (av_frame_ref(*frame, queue.front()) < 0)
-			{
-				ret = false;
-				break;
-			}
+			 
 
-			auto tmp = queue.front();
+			tmp = queue.front();
 			queue.pop();
 
-			av_frame_free(&tmp);
+			 
 
 			nb_frames--;
 
@@ -55,9 +51,10 @@ bool FrameQueue::deQueue(AVFrame **frame)
 		else
 		{
 			cond.wait(&mutex);
+		
 		}
 	}
 
 	mutex.unlock();
-	return ret;
+	return tmp;
 }

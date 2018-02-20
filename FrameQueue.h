@@ -22,6 +22,6 @@ struct FrameQueue
 
 	FrameQueue();
 	bool enQueue(const AVFrame* frame);
-	bool deQueue(AVFrame **frame);
+	AVFrame * deQueue();
 };
 
