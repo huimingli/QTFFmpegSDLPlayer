@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>QTPlayerClass</class>
+ <widget class="QWidget" name="QTPlayerClass">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>600</width>
+    <height>400</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>QTPlayer</string>
+  </property>
+  <widget class="VideoOpenGLWidget" name="openGLWidget">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>800</width>
+     <height>600</height>
+    </rect>
+   </property>
+  </widget>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>VideoOpenGLWidget</class>
+   <extends>QOpenGLWidget</extends>
+   <header>videoopenglwidget.h</header>
+  </customwidget>
+ </customwidgets>
+ <resources>
+  <include location="QTPlayer.qrc"/>
+ </resources>
+ <connections/>
+</ui>
