@@ -1,6 +1,7 @@
 #include "VideoOpenGLWidget.h"
 #include "Media.h"
 #include <QPainter>
+static QImage image;
 VideoOpenGLWidget::VideoOpenGLWidget(QWidget *parent)
 	: QOpenGLWidget(parent)
 {
@@ -10,14 +11,15 @@ VideoOpenGLWidget::VideoOpenGLWidget(QWidget *parent)
 VideoOpenGLWidget::~VideoOpenGLWidget()
 {
 }
-void VideoOpenGLWidget::setVideoImage() {
+void VideoOpenGLWidget::setVideoImage(QImage img) {
+	image = img;
 	this->update();
 }
 void VideoOpenGLWidget::paintEvent(QPaintEvent *e)
 {
 	 
-	static QImage *image = NULL;
-	static int w = 0;
+	
+	/*static int w = 0;
 	static int h = 0;
 	if (w != width() || h != height())
 	{
@@ -35,10 +37,10 @@ void VideoOpenGLWidget::paintEvent(QPaintEvent *e)
 		image = new QImage(buf, width(), height(), QImage::Format_ARGB32);
 	}
 
-	Media::getInstance()->video->toRGB((char*)image->bits(), width(), height());
+	Media::getInstance()->video->toRGB((char*)image->bits(), width(), height());*/
 	QPainter painter;
 	painter.begin(this);
-	painter.drawImage(QPoint(0, 0), *image);
+	painter.drawImage(QPoint(0, 0), image);
 	painter.end();
 	 
 }

@@ -61,3 +61,8 @@ AVPacket PacketQueue::deQueue()
 	mutex.unlock();
 	return pkt;
 }
+
+Uint32 PacketQueue::getPacketSize()
+{
+	return size;
+}

@@ -1,6 +1,8 @@
 #include "Media.h"
 
-
+extern "C" {
+#include <libavutil/time.h>
+}
 
 const static long long  MAX_AUDIOQ_SIZE = (5 * 16 * 1024);
 const static long long   MAX_VIDEOQ_SIZE = (5 * 256 * 1024);
@@ -61,7 +63,7 @@ Media *  Media::config() {
 
 	avcodec_open2(video->videoContext, pVCodec, nullptr);
 
-	/*video->frame_timer = static_cast<double>(av_gettime()) / 1000000.0;
+	video->frame_timer = static_cast<double>(av_gettime()) / 1000000.0;
 	video->frame_last_delay = 40e-3;//¼ÆËãÊ±¼ä£¬TODO*/
 
 	return this;
@@ -77,7 +79,7 @@ bool Media::checkMediaSizeValid()
 {
 	Uint32 audioSize = this->audio->getAudioQueueSize();
 	Uint32 videoSize = this->video->getVideoQueueSize();
-	return (audioSize> MAX_AUDIOQ_SIZE || videoSize> MAX_VIDEOQ_SIZE);
+	return (/*audioSize> MAX_AUDIOQ_SIZE ||*/ videoSize> MAX_VIDEOQ_SIZE);
 }
 
 int Media::getVideoStreamIndex()
@@ -109,6 +111,11 @@ void Media::startReadPackets()
 void Media::startReadVideoFrame()
 {
 	video->start();
+}
+
+void Media::startAudioPlay()
+{
+	audio->audioPlay();
 }
 
 Media::~Media()

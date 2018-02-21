@@ -13,7 +13,7 @@ public:
 	~VideoOpenGLWidget();
 	void paintEvent(QPaintEvent *e);
 public slots:
-	void setVideoImage();
+	void setVideoImage(QImage img);
 private:
 	Ui::VideoOpenGLWidget ui;
 };

@@ -3,7 +3,7 @@
 
 FrameQueue::FrameQueue()
 {
-	nb_frames = 0;
+	 
 }
 
 bool FrameQueue::enQueue(const AVFrame* frame)
@@ -19,7 +19,7 @@ bool FrameQueue::enQueue(const AVFrame* frame)
 	mutex.lock();
 	queue.push(p);
 
-	nb_frames++;
+	 
 	
 	cond.wakeOne();
 	mutex.unlock();
@@ -43,7 +43,7 @@ AVFrame * FrameQueue::deQueue()
 
 			 
 
-			nb_frames--;
+ 
 
 			ret = true;
 			break;
@@ -57,4 +57,9 @@ AVFrame * FrameQueue::deQueue()
 
 	mutex.unlock();
 	return tmp;
+}
+
+int FrameQueue::getQueueSize()
+{
+	return queue.size();
 }

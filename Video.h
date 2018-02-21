@@ -16,7 +16,6 @@ extern "C" {
 //}
 class Video:public QThread
 {
-	Q_OBJECT
 public:
 	Video();
 	~Video();
@@ -38,9 +37,7 @@ public:
 	double video_clock;
 	PacketQueue *videoPackets;	
 	FrameQueue frameQueue;
-	bool toRGB(char *out, int outwidth, int outheight);
-signals:
-	void updateFrame();
+	
 private:
 	SwsContext *cCtx = NULL;
 	int streamIndex;

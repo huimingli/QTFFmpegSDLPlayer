@@ -1,5 +1,5 @@
 #include "Video.h"
-#include "DisplayMediaThread.h"
+ 
 
 static bool isExit = false;
 Video::Video()
@@ -14,7 +14,6 @@ Video::Video()
 
 Video::~Video()
 {
-	/*msleep(1000);*/
 	delete videoPackets;
 	isExit = true;
 	wait();
@@ -32,7 +31,7 @@ void Video::setStreamIndex(const int streamIndex)
 
 int Video::getVideoQueueSize()
 {
-	return videoPackets->size;
+	return videoPackets->getPacketSize();
 }
 
 void Video::enqueuePacket(const AVPacket pkt)
@@ -65,6 +64,11 @@ void Video::run()
 	AVPacket pkt;
 	while (!isExit)
 	{
+		if (frameQueue.getQueueSize() >= FrameQueue::capacity) {
+            msleep(100);
+			continue;
+		}
+			
 		pkt = videoPackets->deQueue();
 		int ret = avcodec_send_packet(videoContext, &pkt);
 		if (ret < 0 && ret != AVERROR(EAGAIN) && ret != AVERROR_EOF)
@@ -81,46 +85,13 @@ void Video::run()
 
 		pts = synchronize(frame, pts);
 
-		frame->opaque = &pts;
-
-		/*if (frameQueue.nb_frames >= FrameQueue::capacity)
-			msleep(500 * 2);*/
+		frame->opaque = &pts;	
 
 		frameQueue.enQueue(frame);
 
 		av_frame_unref(frame);
-		updateFrame();
+		 
+		//updateFrame();
 	}
 	av_frame_free(&frame);
-}
-
-bool Video::toRGB(char *out, int outwidth, int outheight)
-{
- 
-	AVFrame * frame = frameQueue.deQueue();
- 	AVCodecContext *videoCtx = stream->codec;
-
-	cCtx = sws_getCachedContext(cCtx, videoCtx->width,
-		videoCtx->height,
-		videoCtx->pix_fmt,
-		outwidth, outheight,
-		AV_PIX_FMT_BGRA,
-		SWS_BICUBIC,
-		NULL, NULL, NULL
-	);
- 
-	uint8_t *data[AV_NUM_DATA_POINTERS] = { 0 };
-	data[0] = (uint8_t *)out;
-	int linesize[AV_NUM_DATA_POINTERS] = { 0 };
-	linesize[0] = outwidth * 4;
-	int h = sws_scale(cCtx, frame->data, frame->linesize, 0, videoCtx->height,
-		data,
-		linesize
-	);//Ëõ·ÅÍ¼Æ¬
-	if (h > 0)
-	{
-		printf("(%d)", h);
-	}
- 
-	return true;
 }

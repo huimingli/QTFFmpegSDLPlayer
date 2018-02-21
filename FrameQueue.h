@@ -9,19 +9,23 @@ extern "C"{
 #include <libavformat/avformat.h>
 }
  
-struct FrameQueue
+class FrameQueue
 {
+public:
 	static const int capacity = 30;
+	FrameQueue();
+	bool enQueue(const AVFrame* frame);
+	AVFrame * deQueue();	
+	int getQueueSize();
+private:
+	
 
-	std::queue<AVFrame*> queue;
 
-	uint32_t nb_frames;
-
+    std::queue<AVFrame*> queue;
+	 
 	QMutex mutex;
 	QWaitCondition cond;
 
-	FrameQueue();
-	bool enQueue(const AVFrame* frame);
-	AVFrame * deQueue();
+
 };
 

@@ -12,8 +12,14 @@ extern "C"{
 
 }
 
-struct PacketQueue
+class PacketQueue
 {
+public:
+	PacketQueue();
+	bool enQueue(const AVPacket packet);
+	AVPacket deQueue();
+	Uint32 getPacketSize();
+private:
 	std::queue<AVPacket> queue;
 
 	Uint32    nb_packets;
@@ -21,9 +27,7 @@ struct PacketQueue
 	QMutex mutex;
 	QWaitCondition cond;
 
-	PacketQueue();
-	bool enQueue(const AVPacket packet);
-	AVPacket deQueue();
+	
 };
 
  

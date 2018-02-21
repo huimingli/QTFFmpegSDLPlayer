@@ -24,12 +24,15 @@ public:
 	void enqueueVideoPacket(const AVPacket packet);
 	void enqueueAudioPacket(const AVPacket packet);
 	void startReadPackets();
-	void startReadVideoFrame();Video *video;
+	void startReadVideoFrame();
+	void startAudioPlay();
+	Video *video;
+	Audio *audio;
 private:
 	ReadPacketsThread *readPacketsThread;
     Media();
 	char *filename;
-	Audio *audio;
+	
 	
 };
 
