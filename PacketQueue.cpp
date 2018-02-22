@@ -1,25 +1,22 @@
-
 #include "PacketQueue.h"
 #include <iostream>
-
- 
-
+static bool isExit = false;
 PacketQueue::PacketQueue()
 {
-	nb_packets = 0;
-	size       = 0;
+	size = 0;
+}
 
- 
+PacketQueue::~PacketQueue() {
+	mutex.lock();
+	isExit = true;	 
+	mutex.unlock();
 }
 
 bool PacketQueue::enQueue(const AVPacket packet)
 {
 	mutex.lock();
 	queue.push(packet);
-
 	size += packet.size;
-	nb_packets++;
-
 	cond.wakeOne();
 	mutex.unlock();
 	return true;
@@ -29,34 +26,27 @@ AVPacket PacketQueue::deQueue()
 {
 	bool ret = false;
 	AVPacket pkt;
+	
+	if (isExit) {
+		
+		return pkt;
+	}
 	mutex.lock();
 	 
 	while (true)
 	{
-		/*if (quit)
-		{
-			ret = false;
-			break;
-		}*/
-
 		if (!queue.empty())
 		{
 			pkt = queue.front();
-
 			queue.pop();
-			size -= pkt.size;
-		 
-			nb_packets--;
-			
-
+			size -= pkt.size;		 			
 			ret = true;
 			break;
-		}
-	 
+		}	 
 		else
 		{			
 			cond.wait(&mutex);
-		}
+		} 
 	}
 	mutex.unlock();
 	return pkt;
@@ -65,4 +55,12 @@ AVPacket PacketQueue::deQueue()
 Uint32 PacketQueue::getPacketSize()
 {
 	return size;
+}
+
+void PacketQueue::queueFlush() {
+	 while (!queue.empty())
+	 {	
+		 AVPacket pkt = deQueue();
+		 av_free_packet(&pkt);		
+	 }
 }

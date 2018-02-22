@@ -21,8 +21,8 @@ QT_BEGIN_MOC_NAMESPACE
 QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 struct qt_meta_stringdata_VideoOpenGLWidget_t {
-    QByteArrayData data[4];
-    char stringdata0[37];
+    QByteArrayData data[5];
+    char stringdata0[45];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -34,10 +34,12 @@ static const qt_meta_stringdata_VideoOpenGLWidget_t qt_meta_stringdata_VideoOpen
 QT_MOC_LITERAL(0, 0, 17), // "VideoOpenGLWidget"
 QT_MOC_LITERAL(1, 18, 13), // "setVideoImage"
 QT_MOC_LITERAL(2, 32, 0), // ""
-QT_MOC_LITERAL(3, 33, 3) // "img"
+QT_MOC_LITERAL(3, 33, 7), // "QImage*"
+QT_MOC_LITERAL(4, 41, 3) // "img"
 
     },
-    "VideoOpenGLWidget\0setVideoImage\0\0img"
+    "VideoOpenGLWidget\0setVideoImage\0\0"
+    "QImage*\0img"
 };
 #undef QT_MOC_LITERAL
 
@@ -58,7 +60,7 @@ static const uint qt_meta_data_VideoOpenGLWidget[] = {
        1,    1,   19,    2, 0x0a /* Public */,
 
  // slots: parameters
-    QMetaType::Void, QMetaType::QImage,    3,
+    QMetaType::Void, 0x80000000 | 3,    4,
 
        0        // eod
 };
@@ -69,7 +71,7 @@ void VideoOpenGLWidget::qt_static_metacall(QObject *_o, QMetaObject::Call _c, in
         VideoOpenGLWidget *_t = static_cast<VideoOpenGLWidget *>(_o);
         Q_UNUSED(_t)
         switch (_id) {
-        case 0: _t->setVideoImage((*reinterpret_cast< QImage(*)>(_a[1]))); break;
+        case 0: _t->setVideoImage((*reinterpret_cast< QImage*(*)>(_a[1]))); break;
         default: ;
         }
     }

@@ -2,8 +2,7 @@
 #include "FrameQueue.h"
 
 FrameQueue::FrameQueue()
-{
-	 
+{	 
 }
 
 bool FrameQueue::enQueue(const AVFrame* frame)
@@ -13,17 +12,11 @@ bool FrameQueue::enQueue(const AVFrame* frame)
 	int ret = av_frame_ref(p, frame);
 	if (ret < 0)
 		return false;
-
 	p->opaque = (void *)new double(*(double*)p->opaque); //上一个指向的是一个局部的变量，这里重新分配pts空间
-
 	mutex.lock();
-	queue.push(p);
-
-	 
-	
+	queue.push(p);	
 	cond.wakeOne();
-	mutex.unlock();
-	
+	mutex.unlock();	
 	return true;
 }
 
@@ -36,30 +29,29 @@ AVFrame * FrameQueue::deQueue()
 	{
 		if (!queue.empty())
 		{
-			 
-
 			tmp = queue.front();
-			queue.pop();
-
-			 
-
- 
-
+			queue.pop();		
 			ret = true;
 			break;
 		}
 		else
 		{
-			cond.wait(&mutex);
-		
+			cond.wait(&mutex);		
 		}
 	}
-
 	mutex.unlock();
 	return tmp;
 }
 
 int FrameQueue::getQueueSize()
 {
-	return queue.size();
+	return queue.size();	
+}
+
+void FrameQueue::queueFlush() {
+	while (!queue.empty())
+	{		
+		AVFrame *frame = deQueue();
+		av_frame_unref(frame);
+	}
 }

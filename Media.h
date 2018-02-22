@@ -1,7 +1,7 @@
 #pragma once
 #include "Audio.h"
 #include "Video.h"
-#include "ReadPacketsThread.h"
+#include <QMutex>
 extern "C" {
 
 #include <libavformat\avformat.h>
@@ -10,29 +10,30 @@ extern "C" {
 class Media
 {
 public:
-	AVFormatContext *pFormatCtx;
 	static Media *getInstance() {
 		static Media media;
 		return &media;
 	}
 	~Media();
 	Media * config();
-	Media * setMediaFile(char*filename);
+	Media * setMediaFile(const char*filename);
 	bool checkMediaSizeValid();
 	int getVideoStreamIndex();
 	int getAudioStreamIndex();
-	void enqueueVideoPacket(const AVPacket packet);
-	void enqueueAudioPacket(const AVPacket packet);
-	void startReadPackets();
-	void startReadVideoFrame();
+	void enqueueVideoPacket(const AVPacket &packet);
+	void enqueueAudioPacket(const AVPacket &packet);
 	void startAudioPlay();
+	AVFormatContext *getAVFormatContext();
 	Video *video;
 	Audio *audio;
+	void close();
+	int totalMs = 0;
+	int pts = 0;
+	bool seek(float pos);
 private:
-	ReadPacketsThread *readPacketsThread;
+	AVFormatContext *pFormatCtx;
     Media();
-	char *filename;
-	
-	
+	const char *filename;
+	QMutex mutex;
 };
 

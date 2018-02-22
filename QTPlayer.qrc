@@ -1,4 +1,17 @@
 <RCC>
-    <qresource prefix="QTPlayer">
+    <qresource prefix="/QTPlayer">
+        <file>Resources/bb.jpg</file>
+        <file>Resources/close.png</file>
+        <file>Resources/max.png</file>
+        <file>Resources/min.png</file>
+        <file>Resources/restore.png</file>
+        <file>Resources/PauseH.png</file>
+        <file>Resources/PauseN.png</file>
+        <file>Resources/PauseP.png</file>
+        <file>Resources/PlayD.png</file>
+        <file>Resources/PlayH.png</file>
+        <file>Resources/PlayN.png</file>
+        <file>Resources/PlayP.png</file>
+        <file>Resources/titleBar.css</file>
     </qresource>
 </RCC>

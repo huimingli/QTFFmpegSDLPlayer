@@ -1,22 +1,24 @@
 #include "Video.h"
- 
 
 static bool isExit = false;
+static QMutex mutex;
 Video::Video()
 {
-	frame_timer = 0.0;
-	frame_last_delay = 0.0;
-	frame_last_pts = 0.0;
-	video_clock = 0.0;
+	frameTimer = 0.0;
+	frameLastDelay = 0.0;
+	frameLastPts = 0.0;
+	videoClock = 0.0;
 	videoPackets = new PacketQueue;
 }
 
 
 Video::~Video()
 {
+	mutex.lock();
 	delete videoPackets;
 	isExit = true;
 	wait();
+	mutex.unlock();
 }
 
 int Video::getStreamIndex()
@@ -24,7 +26,7 @@ int Video::getStreamIndex()
 	return streamIndex;
 }
 
-void Video::setStreamIndex(const int streamIndex)
+void Video::setStreamIndex(const int &streamIndex)
 {
 	this->streamIndex = streamIndex;
 }
@@ -34,26 +36,52 @@ int Video::getVideoQueueSize()
 	return videoPackets->getPacketSize();
 }
 
-void Video::enqueuePacket(const AVPacket pkt)
+void Video::enqueuePacket(const AVPacket &pkt)
 {
 	videoPackets->enQueue(pkt);
 }
 
-double Video::synchronize(AVFrame *srcFrame, double pts)
+AVFrame * Video::dequeueFrame()
 {
-	double frame_delay;
+	return frameQueue.deQueue();
+}
 
+double Video::synchronizeVideo(AVFrame *&srcFrame, double &pts)
+{
+	double frameDelay;
 	if (pts != 0)
-		video_clock = pts; // Get pts,then set video clock to it
+		videoClock = pts; // Get pts,then set video clock to it
 	else
-		pts = video_clock; // Don't get pts,set it to video clock
-
-	frame_delay = av_q2d(stream->codec->time_base);
-	frame_delay += srcFrame->repeat_pict * (frame_delay * 0.5);
-
-	video_clock += frame_delay;
-
+		pts = videoClock; // Don't get pts,set it to video clock
+	frameDelay = av_q2d(stream->codec->time_base);
+	frameDelay += srcFrame->repeat_pict * (frameDelay * 0.5);
+	videoClock += frameDelay;
 	return pts;
+}
+
+AVStream * Video::getVideoStream()
+{
+	return stream;
+}
+
+void Video::setVideoStream(AVStream *& videoStream)
+{
+	this->stream = videoStream;
+}
+
+AVCodecContext * Video::getAVCodecCotext()
+{
+	return this->videoContext;
+}
+
+void Video::setAVCodecCotext(AVCodecContext * avCodecContext)
+{
+	this->videoContext = avCodecContext;
+}
+
+void Video::setFrameTimer(const double & frameTimer)
+{
+	this->frameTimer = frameTimer;
 }
 
 
@@ -64,34 +92,83 @@ void Video::run()
 	AVPacket pkt;
 	while (!isExit)
 	{
+		mutex.lock();
 		if (frameQueue.getQueueSize() >= FrameQueue::capacity) {
+			mutex.unlock();
             msleep(100);
+			continue;
+		}			
+		pkt = videoPackets->deQueue();
+		int ret = avcodec_send_packet(videoContext, &pkt);
+		if (ret < 0 && ret != AVERROR(EAGAIN) && ret != AVERROR_EOF) {
+			mutex.unlock();
 			continue;
 		}
 			
-		pkt = videoPackets->deQueue();
-		int ret = avcodec_send_packet(videoContext, &pkt);
-		if (ret < 0 && ret != AVERROR(EAGAIN) && ret != AVERROR_EOF)
-			continue;
-
 		ret = avcodec_receive_frame(videoContext, frame);
-		if (ret < 0 && ret != AVERROR_EOF)
+		if (ret < 0 && ret != AVERROR_EOF) {
+			mutex.unlock();
 			continue;
-
+		}
+			
 		if ((pts = av_frame_get_best_effort_timestamp(frame)) == AV_NOPTS_VALUE)
 			pts = 0;
-
 		pts *= av_q2d(stream->time_base);
-
-		pts = synchronize(frame, pts);
-
+		pts = synchronizeVideo(frame, pts);
 		frame->opaque = &pts;	
-
 		frameQueue.enQueue(frame);
-
 		av_frame_unref(frame);
-		 
-		//updateFrame();
+		mutex.unlock();
 	}
 	av_frame_free(&frame);
+}
+
+double Video::getFrameTimer()
+{
+	return frameTimer;
+}
+
+void Video::setFrameLastPts(const double & frameLastPts)
+{
+	this->frameLastPts = frameLastPts;
+}
+
+double Video::getFrameLastPts()
+{
+	return frameLastPts;
+}
+
+void Video::setFrameLastDelay(const double & frameLastDelay)
+{
+	this->frameLastDelay = frameLastDelay;
+}
+
+double Video::getFrameLastDelay()
+{
+	return frameLastDelay;
+}
+
+void Video::setVideoClock(const double & videoClock)
+{
+	this->videoClock = videoClock;
+}
+
+double Video::getVideoClock()
+{
+	return videoClock;
+}
+
+int Video::getVideoFrameSiez()
+{
+	return frameQueue.getQueueSize();
+}
+
+void Video::clearFrames()
+{
+	frameQueue.queueFlush();
+}
+
+void Video::clearPackets()
+{
+	videoPackets->queueFlush();
 }

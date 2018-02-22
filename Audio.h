@@ -10,28 +10,40 @@ class Audio
 public:
 	Audio();
 	~Audio();
-	const uint32_t BUFFERSIZE = 192000;// 缓冲区的大小
+	const uint32_t BUFFERSIZE = 192000;// 缓冲区的大小									   
+	bool audioPlay();
+	bool audioClose();
+	double getCurrentAudioClock();
+	int getStreamIndex();
+	void setStreamIndex(const int streamIndex);
+	int getAudioQueueSize();
+	void enqueuePacket(const AVPacket pkt);
+	AVPacket dequeuePacket();
+	uint8_t* getAudioBuff();
+	void setAudioBuff(uint8_t*& audioBuff);
+	uint32_t getAudioBuffSize();
+	void setAudioBuffSize(uint32_t audioBuffSize);
+	uint32_t getAudioBuffIndex();
+	void setAudioBuffIndex(uint32_t audioBuffIndex);
+	double getAudioClock();
+	void setAudioClock(const double &audioClock);
+	AVStream *getStream();
+	void setStream(AVStream *&stream);
+	AVCodecContext *getAVCodecContext();
+	void setAVCodecContext(AVCodecContext *audioContext);
+	bool getIsPlaying();
+	void setPlaying(bool isPlaying);
+	void clearPacket();
+private:
+	AVCodecContext *audioContext;
+	AVStream *stream;
 	double audioClock; // audio clock
+	PacketQueue audiaPackets;
 	uint8_t *audioBuff;       // 解码后数据的缓冲空间
 	uint32_t audioBuffSize;  // buffer中的字节数
 	uint32_t audioBuffIndex; // buffer中未发送数据的index
-							   /**
-							   * audio play
-							   */
-	bool audioPlay();
-
-	// get audio clock
-	double get_audio_clock();
-
-	int getStreamIndex();
-	void setStreamIndex(const int streamIndex);
-	AVCodecContext *audioContext;
-	AVStream *stream;
-	int getAudioQueueSize();
-	void enqueuePacket(const AVPacket pkt);
-	PacketQueue audiaPackets;
-private:
 	int streamIndex;
+	bool isPlay = false;
 
 };
 /**

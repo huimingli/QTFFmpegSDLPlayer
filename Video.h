@@ -8,40 +8,46 @@ extern "C" {
 #include<libswscale/swscale.h>
 #include <libswresample/swresample.h>
 }
-//extern "C"
-//{
-//#include<libavformat/avformat.h>
-//
-//#include <libavutil/time.h>
-//}
+
 class Video:public QThread
 {
 public:
 	Video();
-	~Video();
-	AVStream *stream;
-	int getStreamIndex();
-	void setStreamIndex(const int streamIndex);
-	AVCodecContext *videoContext;
-	int getVideoQueueSize();
-	void enqueuePacket(const AVPacket pkt);
+	~Video();		
 	void run();
-	double synchronize(AVFrame *srcFrame, double pts);
+	double synchronizeVideo(AVFrame *&srcFrame, double &pts);
+	int getStreamIndex();
+	AVCodecContext * getAVCodecCotext();
+	void enqueuePacket(const AVPacket &pkt);
 
-	AVFrame *frame;
-	AVFrame *displayFrame;
-
-	double frame_timer;         // Sync fields
-	double frame_last_pts;
-	double frame_last_delay;
-	double video_clock;
+	AVFrame * dequeueFrame();
+	void setStreamIndex(const int &streamIndex);
+	int getVideoQueueSize();
+	void setVideoStream(AVStream *& stream);
+	AVStream * getVideoStream();	
+	void setAVCodecCotext(AVCodecContext *avCodecContext);
+	void setFrameTimer(const double &frameTimer);
+	double getFrameTimer();
+	void setFrameLastPts(const double &frameLastPts);
+	double getFrameLastPts();
+	void setFrameLastDelay(const double &frameLastDelay);
+	double getFrameLastDelay();
+	void setVideoClock(const double &videoClock);
+	double getVideoClock();
+	int getVideoFrameSiez();
+	SwsContext *swsContext = NULL;
+	void clearFrames();
+	void clearPackets();
+private:
+	double frameTimer;         // Sync fields
+	double frameLastPts;
+	double frameLastDelay;
+	double videoClock;
 	PacketQueue *videoPackets;	
 	FrameQueue frameQueue;
-	
-private:
-	SwsContext *cCtx = NULL;
+	AVStream *stream;
 	int streamIndex;
 	
-
+	AVCodecContext *videoContext;
 };
 

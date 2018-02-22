@@ -6,12 +6,74 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>600</width>
-    <height>400</height>
+    <width>800</width>
+    <height>600</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>QTPlayer</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">QPushButton:!hover
+{
+    background-color: qlineargradient(spread:pad,x1:0,y1:0,x2:0,y2:1,stop:0 rgba(120, 120, 120, 255),stop:0.495      rgba(39, 39, 39, 255),stop:0.505 rgba(39, 39, 39, 255),stop:1 rgba(120, 120, 120, 255));
+    border:none;
+    border-radius:5px;
+	color: rgb(255, 255, 255);
+	font: 75 12pt &quot;黑体&quot;;
+}
+QPushButton:hover
+{
+    background-color: qlineargradient(spread:pad,x1:0,y1:0,x2:0,y2:1,stop:0 rgba(39, 39, 39, 255),stop:0.495      rgba(120, 120, 120, 255),stop:0.505 rgba(120, 120, 120, 255),stop:1 rgba(39, 39, 39, 255));
+    border:none;
+    border-radius:5px;
+	color: rgb(255, 255, 255);
+	font: 75 12pt &quot;黑体&quot;;
+}
+#playButton{background-color: rgba(255, 255, 255,0);}
+
+#playButton:hover{image: url(:/QTPlayer/Resources/PlayN.png);}
+
+#playButton:!hover{image: url(:/QTPlayer/Resources/PlayH.png);}
+
+#playButton:pressed{image: url(:/QTPlayer/Resources/PlayP.png);}
+
+#pauseButton{background-color: rgba(255, 255, 255,0);}
+
+#pauseButton:hover{image: url(:/QTPlayer/Resources/PauseN.png);}
+
+#pauseButton:!hover{image: url(:/QTPlayer/Resources/PauseH.png);}
+
+#pauseButton:pressed{image: url(:/QTPlayer/Resources/PauseP.png);}
+
+#bottemWidget{
+background-color: rgba(0, 0, 0, 122);
+}
+
+#totalHour{
+    color: rgb(255, 255, 255);
+	font: 75 8pt &quot;黑体&quot;;
+}
+#totalMinute{
+    color: rgb(255, 255, 255);
+	font: 75 8pt &quot;黑体&quot;;
+}
+#totalSecond{
+    color: rgb(255, 255, 255);
+	font: 75 8pt &quot;黑体&quot;;
+}
+#currentHour{
+    color: rgb(255, 255, 255);
+	font: 75 8pt &quot;黑体&quot;;
+}
+#currentMinute{
+    color: rgb(255, 255, 255);
+	font: 75 8pt &quot;黑体&quot;;
+}
+#currentSecond{
+    color: rgb(255, 255, 255);
+	font: 75 8pt &quot;黑体&quot;;
+}</string>
   </property>
   <widget class="VideoOpenGLWidget" name="openGLWidget">
    <property name="geometry">
@@ -23,6 +85,163 @@
     </rect>
    </property>
   </widget>
+  <widget class="QWidget" name="bottemWidget" native="true">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>520</y>
+     <width>800</width>
+     <height>80</height>
+    </rect>
+   </property>
+   <widget class="QSlider" name="playslider">
+    <property name="geometry">
+     <rect>
+      <x>120</x>
+      <y>10</y>
+      <width>601</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="maximum">
+     <number>999</number>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Horizontal</enum>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pauseButton">
+    <property name="geometry">
+     <rect>
+      <x>390</x>
+      <y>40</y>
+      <width>31</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="playButton">
+    <property name="geometry">
+     <rect>
+      <x>430</x>
+      <y>40</y>
+      <width>31</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QLabel" name="currentHour">
+    <property name="geometry">
+     <rect>
+      <x>110</x>
+      <y>40</y>
+      <width>16</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>0</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="currentMinute">
+    <property name="geometry">
+     <rect>
+      <x>130</x>
+      <y>40</y>
+      <width>16</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>0</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="currentSecond">
+    <property name="geometry">
+     <rect>
+      <x>150</x>
+      <y>40</y>
+      <width>16</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>0</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="totalHour">
+    <property name="geometry">
+     <rect>
+      <x>635</x>
+      <y>30</y>
+      <width>21</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>0</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="totalMinute">
+    <property name="geometry">
+     <rect>
+      <x>650</x>
+      <y>30</y>
+      <width>16</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>0</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="totalSecond">
+    <property name="geometry">
+     <rect>
+      <x>670</x>
+      <y>30</y>
+      <width>16</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>0</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="openButton">
+    <property name="geometry">
+     <rect>
+      <x>480</x>
+      <y>40</y>
+      <width>93</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>open</string>
+    </property>
+   </widget>
+  </widget>
+  <widget class="TitleBar" name="titleBar" native="true">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>800</width>
+     <height>60</height>
+    </rect>
+   </property>
+  </widget>
+  <zorder>openGLWidget</zorder>
+  <zorder>bottemWidget</zorder>
+  <zorder>titleBar</zorder>
+  <zorder>playslider</zorder>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
@@ -31,9 +250,70 @@
    <extends>QOpenGLWidget</extends>
    <header>videoopenglwidget.h</header>
   </customwidget>
+  <customwidget>
+   <class>TitleBar</class>
+   <extends>QWidget</extends>
+   <header>titlebar.h</header>
+   <container>1</container>
+  </customwidget>
  </customwidgets>
  <resources>
   <include location="QTPlayer.qrc"/>
  </resources>
- <connections/>
+ <connections>
+  <connection>
+   <sender>openButton</sender>
+   <signal>clicked()</signal>
+   <receiver>QTPlayerClass</receiver>
+   <slot>openVideoFile()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>420</x>
+     <y>260</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>444</x>
+     <y>-22</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>playslider</sender>
+   <signal>sliderPressed()</signal>
+   <receiver>QTPlayerClass</receiver>
+   <slot>sliderPress()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>615</x>
+     <y>535</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>672</x>
+     <y>-1</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>playslider</sender>
+   <signal>sliderReleased()</signal>
+   <receiver>QTPlayerClass</receiver>
+   <slot>sliderRelease()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>681</x>
+     <y>533</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>707</x>
+     <y>-14</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>openVideoFile()</slot>
+  <slot>sliderPress()</slot>
+  <slot>sliderRelease()</slot>
+  <slot>setPos(int)</slot>
+ </slots>
 </ui>

@@ -19,10 +19,10 @@ public:
 	bool enQueue(const AVPacket packet);
 	AVPacket deQueue();
 	Uint32 getPacketSize();
+	void queueFlush();
+	~PacketQueue();
 private:
 	std::queue<AVPacket> queue;
-
-	Uint32    nb_packets;
 	Uint32    size;
 	QMutex mutex;
 	QWaitCondition cond;

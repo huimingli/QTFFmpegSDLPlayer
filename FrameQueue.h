@@ -17,12 +17,9 @@ public:
 	bool enQueue(const AVFrame* frame);
 	AVFrame * deQueue();	
 	int getQueueSize();
+	void queueFlush();
 private:
-	
-
-
-    std::queue<AVFrame*> queue;
-	 
+    std::queue<AVFrame*> queue;	 
 	QMutex mutex;
 	QWaitCondition cond;
 
