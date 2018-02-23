@@ -98,6 +98,11 @@ void Video::run()
             msleep(100);
 			continue;
 		}			
+		if (videoPackets->getPacketSize() == 0) {
+			locker.unlock();
+			msleep(100);
+			continue;
+		}
 		pkt = videoPackets->deQueue();
 		int ret = avcodec_send_packet(videoContext, &pkt);
 		if (ret < 0 && ret != AVERROR(EAGAIN) && ret != AVERROR_EOF) {

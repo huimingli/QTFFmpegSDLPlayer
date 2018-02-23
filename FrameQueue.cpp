@@ -5,6 +5,14 @@ FrameQueue::FrameQueue()
 {	 
 }
 
+//************************************
+// Method:    enQueue
+// FullName:  FrameQueue::enQueue
+// Access:    public 
+// Returns:   bool
+// Qualifier: 帧队列入队
+// Parameter: const AVFrame * frame
+//************************************
 bool FrameQueue::enQueue(const AVFrame* frame)
 {
 	AVFrame* p = av_frame_alloc();
@@ -19,6 +27,13 @@ bool FrameQueue::enQueue(const AVFrame* frame)
 	return true;
 }
 
+//************************************
+// Method:    deQueue
+// FullName:  FrameQueue::deQueue
+// Access:    public 
+// Returns:   AVFrame *
+// Qualifier:帧队列
+//************************************
 AVFrame * FrameQueue::deQueue()
 {
 	bool ret = true;
@@ -42,11 +57,25 @@ AVFrame * FrameQueue::deQueue()
 	return tmp;
 }
 
+//************************************
+// Method:    getQueueSize
+// FullName:  FrameQueue::getQueueSize
+// Access:    public 
+// Returns:   int
+// Qualifier:获取队列大小
+//************************************
 int FrameQueue::getQueueSize()
 {
 	return queue.size();	
 }
 
+//************************************
+// Method:    queueFlush
+// FullName:  FrameQueue::queueFlush
+// Access:    public 
+// Returns:   void
+// Qualifier:清空帧队列
+//************************************
 void FrameQueue::queueFlush() {
 	while (!queue.empty())
 	{		

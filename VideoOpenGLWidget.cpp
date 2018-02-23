@@ -15,6 +15,14 @@ VideoOpenGLWidget::~VideoOpenGLWidget()
 {
 }
 
+//************************************
+// Method:    setVideoImage
+// FullName:  VideoOpenGLWidget::setVideoImage
+// Access:    public 
+// Returns:   void
+// Qualifier: 槽，调用更新函数
+// Parameter: QImage * img
+//************************************
 void VideoOpenGLWidget::setVideoImage(QImage* img) {
 	if (ReadPacketsThread::getInstance()->getIsPlaying()) {
 		image = img;	 
@@ -22,6 +30,14 @@ void VideoOpenGLWidget::setVideoImage(QImage* img) {
 	}
 }
 
+//************************************
+// Method:    paintEvent
+// FullName:  VideoOpenGLWidget::paintEvent
+// Access:    public 
+// Returns:   void
+// Qualifier: 更新画面
+// Parameter: QPaintEvent * e
+//************************************
 void VideoOpenGLWidget::paintEvent(QPaintEvent *e)
 {
 	if (image == nullptr)

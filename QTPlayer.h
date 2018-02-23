@@ -4,6 +4,7 @@
 #include "ui_QTPlayer.h"
 #include <QMenu>
 #include <QAction>
+#include <QPropertyAnimation>
 class QTPlayer : public QWidget
 {
 	Q_OBJECT
@@ -16,6 +17,8 @@ public:
 	void mirrorUpAndDown();
 	void gray2Rgb();
 	void rgb2Gray();
+	void mouseDoubleClickEvent(QMouseEvent * event);
+	void mouseMoveEvent(QMouseEvent *event);
 public slots:
     void openVideoFile();
 	void timerEvent(QTimerEvent *e);
@@ -27,6 +30,10 @@ public slots:
 signals:
 	void sendPos(float pos);
 private:
+	QPropertyAnimation *bottomAnimation;
+	bool isFullScreen = false;
+	void showBottomInAnimation();
+	void hideBottomInAnimation();
 	QMenu *popMenu;
 	QAction *leftRightMirrorAction;
 	QAction *upDownMirrorAction;

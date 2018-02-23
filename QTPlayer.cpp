@@ -23,6 +23,9 @@ QTPlayer::QTPlayer(QWidget *parent)
 		ReadPacketsThread::getInstance(),//槽接收的对象
 		SLOT(receivePos(float))//槽
 	);
+	bottomAnimation = new QPropertyAnimation(ui.bottemWidget, "geometry");
+	setMouseTracking(true);
+	ui.openGLWidget->setMouseTracking(true);
 	popMenu = new QMenu(this);
 	leftRightMirrorAction = new QAction(this);
 	upDownMirrorAction = new QAction(this);
@@ -46,6 +49,14 @@ QTPlayer::QTPlayer(QWidget *parent)
 	play();
 }
 
+//************************************
+// Method:    contextMenuEvent
+// FullName:  QTPlayer::contextMenuEvent
+// Access:    public 
+// Returns:   void
+// Qualifier:右击弹出菜单
+// Parameter: QContextMenuEvent * event
+//************************************
 void QTPlayer::contextMenuEvent(QContextMenuEvent *event) {
 	popMenu->clear();
 	popMenu->addAction(leftRightMirrorAction);
@@ -58,6 +69,46 @@ void QTPlayer::contextMenuEvent(QContextMenuEvent *event) {
 	event->accept();
 }
 
+//************************************
+// Method:    mouseDoubleClickEvent
+// FullName:  QTPlayer::mouseDoubleClickEvent
+// Access:    public 
+// Returns:   void
+// Qualifier:鼠标双击最大化最小化
+// Parameter: QMouseEvent * event
+//************************************
+void QTPlayer::mouseDoubleClickEvent(QMouseEvent * event) {
+	if (windowState() &  Qt::WindowFullScreen)
+		showNormal();
+	else
+		showFullScreen();
+}
+
+//************************************
+// Method:    mouseMoveEvent
+// FullName:  QTPlayer::mouseMoveEvent
+// Access:    public 
+// Returns:   void
+// Qualifier:隐藏，显示底部
+// Parameter: QMouseEvent * event
+//************************************
+void QTPlayer::mouseMoveEvent(QMouseEvent *event) {
+	int y = event->globalY();
+	if (y >= height() - 100 || y <= 5) {
+		showBottomInAnimation();
+	}
+	else {
+		hideBottomInAnimation();
+	}
+}
+
+//************************************
+// Method:    openVideoFile
+// FullName:  QTPlayer::openVideoFile
+// Access:    public 
+// Returns:   void
+// Qualifier:选择打开视频文件
+//************************************
 void QTPlayer::openVideoFile() {
 	QString fileName = QFileDialog::getOpenFileName(this, "please select your video file!");
 	if (fileName.isEmpty()) {
@@ -71,7 +122,7 @@ void QTPlayer::openVideoFile() {
 	QStringList titles = fileName.split("/");
 	setWindowTitle(titles.constLast());
 	int total =Media::getInstance()->totalMs;
-	ui.totalHour->setText(QString::number((int)(Media::getInstance()->totalMs / 1000 / 60 / 60)) + ":");
+	ui.totalHour->setText(QString::number((int)(Media::getInstance()->totalMs / 1000 / 60 / 60)) + ":");//计算视频总的时分秒
 	ui.totalMinute->setText(QString::number((int)(Media::getInstance()->totalMs / 1000 / 60) % 60) + ":");
 	ui.totalSecond->setText(QString::number((int)(Media::getInstance()->totalMs / 1000) % 60 % 60));
 	isPlay = false;
@@ -79,9 +130,17 @@ void QTPlayer::openVideoFile() {
 	float pos = 0;
 	pos = (float)ui.volumeSlider->value() / (float)(ui.volumeSlider->maximum() + 1);
 	if (Media::getInstance()->getAVFormatContext())
-		Media::getInstance()->audio->setVolume(pos*SDL_MIX_MAXVOLUME);
+		Media::getInstance()->audio->setVolume(pos*SDL_MIX_MAXVOLUME);//初始化音量为最大音量的一半
 }
 
+//************************************
+// Method:    setVolume
+// FullName:  QTPlayer::setVolume
+// Access:    public 
+// Returns:   void
+// Qualifier: 设置音量大小
+// Parameter: int volume 音量大小0-128
+//************************************
 void QTPlayer::setVolume(int volume) {
 	float pos = 0;
 	pos = (float)ui.volumeSlider->value() / (float)(ui.volumeSlider->maximum() + 1);
@@ -89,6 +148,50 @@ void QTPlayer::setVolume(int volume) {
 	    Media::getInstance()->audio->setVolume(pos*SDL_MIX_MAXVOLUME);
 }
 
+//************************************
+// Method:    showBottomInAnimation
+// FullName:  QTPlayer::showBottomInAnimation
+// Access:    private 
+// Returns:   void
+// Qualifier:底部显示动画效果
+//************************************
+void QTPlayer::showBottomInAnimation()
+{
+	if (ui.bottemWidget->y() == height()) {
+		bottomAnimation->setDuration(500);
+		bottomAnimation->setStartValue(QRect(ui.bottemWidget->x(), height(), ui.bottemWidget->width(), ui.bottemWidget->height()));
+
+		bottomAnimation->setEndValue(QRect(ui.bottemWidget->x(), this->height() - ui.bottemWidget->height(), ui.bottemWidget->width(), ui.bottemWidget->height()));
+		bottomAnimation->start();
+	}
+}
+
+//************************************
+// Method:    hideBottomInAnimation
+// FullName:  QTPlayer::hideBottomInAnimation
+// Access:    private 
+// Returns:   void
+// Qualifier:底部隐藏动画效果
+//************************************
+void QTPlayer::hideBottomInAnimation()
+{
+	if (ui.bottemWidget->y() == this->height() - ui.bottemWidget->height()) {
+		bottomAnimation->setDuration(500);
+ 		bottomAnimation->setStartValue(QRect(ui.bottemWidget->x(), this->height() - ui.bottemWidget->height(), ui.bottemWidget->width(), ui.bottemWidget->height()));
+
+		bottomAnimation->setEndValue(QRect(ui.bottemWidget->x(), this->height(), ui.bottemWidget->width(), ui.bottemWidget->height()));
+		bottomAnimation->start();
+	}
+}
+
+//************************************
+// Method:    timerEvent
+// FullName:  QTPlayer::timerEvent
+// Access:    public 
+// Returns:   void
+// Qualifier:设置进度条和播放时间
+// Parameter: QTimerEvent * e
+//************************************
 void QTPlayer::timerEvent(QTimerEvent * e)
 {
 	if (Media::getInstance()->totalMs > 0)
@@ -106,11 +209,25 @@ void QTPlayer::timerEvent(QTimerEvent * e)
 	}
 }
 
+//************************************
+// Method:    sliderPress
+// FullName:  QTPlayer::sliderPress
+// Access:    public 
+// Returns:   void
+// Qualifier: 按下进度条
+//************************************
 void QTPlayer::sliderPress()
 {
 	isPressSlider = true;
 }
 
+//************************************
+// Method:    sliderRelease
+// FullName:  QTPlayer::sliderRelease
+// Access:    public 
+// Returns:   void
+// Qualifier: 进度条释放
+//************************************
 void QTPlayer::sliderRelease()
 {
 	isPressSlider = false;
@@ -119,6 +236,13 @@ void QTPlayer::sliderRelease()
 	sendPos(pos);
 }
 
+//************************************
+// Method:    play
+// FullName:  QTPlayer::play
+// Access:    public 
+// Returns:   void
+// Qualifier:视频播放
+//************************************
 void QTPlayer::play() {
 	const QString PAUSE = "QPushButton#playButton{border-image:url(:/QTPlayer/Resources/PauseP.png);}";
 
@@ -139,29 +263,67 @@ void QTPlayer::play() {
 	}
 }
 
+//************************************
+// Method:    mirrorUpAndDown
+// FullName:  QTPlayer::mirrorUpAndDown
+// Access:    public 
+// Returns:   void
+// Qualifier:上下镜像操作
+//************************************
 void QTPlayer::mirrorUpAndDown() {
 	if (Media::getInstance()->getAVFormatContext() && isPlay)
-	    ImageFilter::getInstance()->addTask(XTask{ XTASK_MIRRORUPANDDOWN });
-	//ImageFilter::getInstance()->addColorTask(ColorTask{ COLRTASK_GRAY_RGBA });
+		ImageFilter::getInstance()->addTask(XTask{ XTASK_MIRRORUPANDDOWN });
 }
 
+//************************************
+// Method:    mirrorLeftAndRight
+// FullName:  QTPlayer::mirrorLeftAndRight
+// Access:    public 
+// Returns:   void
+// Qualifier:左右镜像操作
+//************************************
 void QTPlayer::mirrorLeftAndRight() {
 	if (Media::getInstance()->getAVFormatContext() && isPlay)
 	    ImageFilter::getInstance()->addTask(XTask{ XTASK_MIRRORLEFTANDRIGHT });
 }
 
+//************************************
+// Method:    gray2Rgb
+// FullName:  QTPlayer::gray2Rgb
+// Access:    public 
+// Returns:   void
+// Qualifier: 灰度图转rgb
+//************************************
 void QTPlayer::gray2Rgb()
 {
 	if (Media::getInstance()->getAVFormatContext() && isPlay)
 	    ImageFilter::getInstance()->addColorTask(ColorTask{ COLRTASK_GRAY_TO_RGBA });
 }
 
+//************************************
+// Method:    rgb2Gray
+// FullName:  QTPlayer::rgb2Gray
+// Access:    public 
+// Returns:   void
+// Qualifier:rgb图转灰度图
+//************************************
 void QTPlayer::rgb2Gray()
 {
-	if (Media::getInstance()->getAVFormatContext()&&isPlay)
-	    ImageFilter::getInstance()->addColorTask(ColorTask{ COLRTASK_RGBA_TO_GRAY });
+	if (Media::getInstance()->getAVFormatContext() && isPlay) {
+		for(int i=0;i<5;i++)
+        ImageFilter::getInstance()->addColorTask(ColorTask{ COLRTASK_RGBA_TO_GRAY });
+	}
+	   
 }
 
+//************************************
+// Method:    resizeEvent
+// FullName:  QTPlayer::resizeEvent
+// Access:    public 
+// Returns:   void
+// Qualifier: 窗体改变大小时，适配所有控件，以播放按钮为基准
+// Parameter: QResizeEvent * e
+//************************************
 void QTPlayer::resizeEvent(QResizeEvent *e) {
 	ui.openGLWidget->resize(size());
 	ui.bottemWidget->resize(this->width(), ui.bottemWidget->height());
@@ -170,8 +332,6 @@ void QTPlayer::resizeEvent(QResizeEvent *e) {
 	ui.playButton->move((ui.bottemWidget->width()- ui.playButton->width())/2, (ui.bottemWidget->height() - ui.playButton->height()) / 2);
 	ui.openButton->move(ui.playButton->x()+ ui.playButton->width()+30, ui.playButton->y());
 
-	//ui.leftRightButton->move(ui.playButton->x() - ui.leftRightButton->width() - 30, ui.playButton->y());
-	//ui.upDownButton->move(ui.leftRightButton->x() - ui.upDownButton->width() - 30, ui.playButton->y());
 	ui.volumeSlider->move(this->width()-ui.volumeSlider->width()-25, ui.bottemWidget->height() - ui.volumeSlider->height()-20);
 	ui.playslider->move(25, ui.playButton->y()-20);
 	ui.playslider->resize(ui.bottemWidget->width() - 50, ui.playslider->height());
