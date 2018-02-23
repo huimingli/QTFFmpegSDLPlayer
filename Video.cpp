@@ -17,8 +17,9 @@ Video::~Video()
 	mutex.lock();
 	delete videoPackets;
 	isExit = true;
-	wait();
 	mutex.unlock();
+	wait();
+	
 }
 
 int Video::getStreamIndex()

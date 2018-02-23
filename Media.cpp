@@ -67,6 +67,7 @@ Media *  Media::config() {
 	audio->setStream(pFormatCtx->streams[audio->getStreamIndex()]);
 
 	audio->setAVCodecContext(avcodec_alloc_context3(pCodec));
+	
 	if (avcodec_copy_context(audio->getAVCodecContext(), pFormatCtx->streams[audio->getStreamIndex()]->codec) != 0) {
 		mutex.unlock();
 		return nullptr;
@@ -82,7 +83,7 @@ Media *  Media::config() {
 	}
 
 	video->setVideoStream(pFormatCtx->streams[video->getStreamIndex()]);
-
+	 
 	video->setAVCodecCotext(avcodec_alloc_context3(pVCodec));
 	if (avcodec_copy_context(video->getAVCodecCotext(), pFormatCtx->streams[video->getStreamIndex()]->codec) != 0) {
 		mutex.unlock();

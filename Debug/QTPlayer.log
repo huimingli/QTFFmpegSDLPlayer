@@ -1,19 +1,8 @@
-﻿  Audio.cpp
-c:\users\15737\desktop\outsidework\src\include\libavutil\rational.h : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
-  DisplayMediaTimer.cpp
-c:\users\15737\desktop\outsidework\src\include\libavutil\rational.h : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
-  Media.cpp
-c:\users\15737\desktop\outsidework\src\include\libavutil\rational.h : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+﻿  Moc'ing QTPlayer.h...
+  moc_QTPlayer.cpp
   QTPlayer.cpp
 c:\users\15737\desktop\outsidework\src\include\libavutil\rational.h : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
-  ReadPacketsThread.cpp
-c:\users\15737\desktop\outsidework\src\include\libavutil\rational.h : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
-  Video.cpp
-c:\users\15737\desktop\outsidework\src\include\libavutil\rational.h : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
-  VideoOpenGLWidget.cpp
-c:\users\15737\desktop\outsidework\src\include\libavutil\rational.h : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
   main.cpp
-c:\users\15737\desktop\outsidework\src\include\libavutil\rational.h : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
   正在生成代码...
   QTPlayer.vcxproj -> C:\Users\15737\Desktop\outsidework\src\QTPlayer\../../bin/QTPlayer.exe
   QTPlayer.vcxproj -> ../../bin/QTPlayer.pdb (Full PDB)

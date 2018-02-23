@@ -4,9 +4,10 @@
 extern "C" {
 #include <libswresample\swresample.h>
 }
-
+static int audioVolume = 64;
 Audio::Audio()
 {
+	 
 	audioContext = nullptr;
 	streamIndex = -1;
 	stream = nullptr;
@@ -23,6 +24,7 @@ static double r2d(AVRational r)
 
 Audio::~Audio()
 {
+	audioClose();
 	SDL_Quit();
 	if (audioBuff)
 		delete[] audioBuff;
@@ -157,6 +159,11 @@ void Audio::clearPacket()
 {
 	audiaPackets.queueFlush();
 }
+
+void Audio::setVolume(int volume) {
+	audioVolume = volume;
+}
+
 /**
 * 向设备发送audio数据的回调函数
 */
@@ -187,7 +194,7 @@ void audioCallback(void* userdata, Uint8 *stream, int len) {
 		if (len1 > len) // 向设备发送的数据长度为len
 			len1 = len;
 
-		SDL_MixAudio(stream, audio->getAudioBuff() + audio->getAudioBuffIndex(), len, SDL_MIX_MAXVOLUME);
+		SDL_MixAudio(stream, audio->getAudioBuff() + audio->getAudioBuffIndex(), len, audioVolume);
 
 		len -= len1;
 		stream += len1;
@@ -211,7 +218,7 @@ int audioDecodeFrame(Audio*audio, uint8_t *audioBuffer, int bufferSize) {
 	{
 		return -1;
 	}	
-
+	 
 	if (pkt.pts != AV_NOPTS_VALUE)
 	{
 		if (audio->getStream() == nullptr)

@@ -5,8 +5,9 @@ extern "C" {
 #include <libavformat/avformat.h>
 
 }
-class Audio
+class Audio 
 {
+	 
 public:
 	Audio();
 	~Audio();
@@ -34,7 +35,11 @@ public:
 	bool getIsPlaying();
 	void setPlaying(bool isPlaying);
 	void clearPacket();
+	void setVolume(int volume);
+
+ 
 private:
+	
 	AVCodecContext *audioContext;
 	AVStream *stream;
 	double audioClock; // audio clock
