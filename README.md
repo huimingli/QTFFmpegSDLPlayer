@@ -5,3 +5,6 @@
 3，使用视频追逐音频的策略实现音视频同步</br>
 4，支持视频镜像操作，黑白彩色转换</br>
 ![Image text](https://github.com/huimingli/QTFFmpegSDLPlayer/blob/c5676c15c290099b6f5790b3f5f20fb73df4ee12/QQ%E5%9B%BE%E7%89%8720180223210613.png)
+</br>
+项目的主要结构</br>
+![Image text](https://github.com/huimingli/QTFFmpegSDLPlayer/blob/master/20180223224324.png)
