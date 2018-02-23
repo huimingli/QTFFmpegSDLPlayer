@@ -1,0 +1,55 @@
+
+QPushButton#minimizeButton
+{
+    background-color: rgba(255, 255, 255,0);
+    border-image:url(:/QTPlayer/Resources/min.png) 0 81 0 0 ;
+}
+
+QPushButton#minimizeButton:hover
+{
+    border-image:url(:/QTPlayer/Resources/min.png) 0 54 0 27 ;
+}
+
+QPushButton#minimizeButton:pressed
+{
+    border-image:url(:/QTPlayer/Resources/min.png) 0 27 0 54 ;
+}
+
+
+QPushButton#maximizeButton
+{
+    background-color: rgba(255, 255, 255,0);
+    border-image:url(:/QTPlayer/Resources/max.png) 0 81 0 0 ;
+}
+
+QPushButton#maximizeButton:hover
+{
+    border-image:url(:/QTPlayer/Resources/max.png) 0 54 0 27 ;
+}
+
+QPushButton#maximizeButton:pressed
+{
+    border-image:url(:/QTPlayer/Resources/max.png) 0 27 0 54 ;
+}
+
+ 
+
+
+QPushButton#closeButton
+{
+    background-color: rgba(255, 255, 255,0);
+    border-image:url(:/QTPlayer/Resources/close.png) 0 81 0 0 ;
+    border-top-right-radius:3 ;
+}
+
+QPushButton#closeButton:hover
+{
+    border-image:url(:/QTPlayer/Resources/close.png) 0 54 0 27 ;
+    border-top-right-radius:3 ;
+}
+
+QPushButton#closeButton:pressed
+{
+    border-image:url(:/QTPlayer/Resources/close.png) 0 27 0 54 ;
+    border-top-right-radius:3 ;
+}
