@@ -29,7 +29,6 @@ public:
 	void close();
 	int totalMs = 0;
 	int pts = 0;
-	bool seek(float pos);
 private:
 	AVFormatContext *pFormatCtx;
     Media();

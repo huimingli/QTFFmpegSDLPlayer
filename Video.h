@@ -47,7 +47,7 @@ private:
 	FrameQueue frameQueue;
 	AVStream *stream;
 	int streamIndex;
-	
+	QMutex mutex;
 	AVCodecContext *videoContext;
 };
 

@@ -1,7 +1,6 @@
 #include "Video.h"
-
+#include <QMutexLocker>
 static bool isExit = false;
-static QMutex mutex;
 Video::Video()
 {
 	frameTimer = 0.0;
@@ -14,10 +13,10 @@ Video::Video()
 
 Video::~Video()
 {
-	mutex.lock();
+	QMutexLocker locker(&mutex);
 	delete videoPackets;
 	isExit = true;
-	mutex.unlock();
+	locker.unlock();
 	wait();
 	
 }
@@ -93,22 +92,20 @@ void Video::run()
 	AVPacket pkt;
 	while (!isExit)
 	{
-		mutex.lock();
+		QMutexLocker locker(&mutex);
 		if (frameQueue.getQueueSize() >= FrameQueue::capacity) {
-			mutex.unlock();
+			locker.unlock();
             msleep(100);
 			continue;
 		}			
 		pkt = videoPackets->deQueue();
 		int ret = avcodec_send_packet(videoContext, &pkt);
 		if (ret < 0 && ret != AVERROR(EAGAIN) && ret != AVERROR_EOF) {
-			mutex.unlock();
 			continue;
 		}
 			
 		ret = avcodec_receive_frame(videoContext, frame);
 		if (ret < 0 && ret != AVERROR_EOF) {
-			mutex.unlock();
 			continue;
 		}
 			
@@ -119,7 +116,6 @@ void Video::run()
 		frame->opaque = &pts;	
 		frameQueue.enQueue(frame);
 		av_frame_unref(frame);
-		mutex.unlock();
 	}
 	av_frame_free(&frame);
 }

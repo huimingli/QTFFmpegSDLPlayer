@@ -1,6 +1,6 @@
 
 #include "FrameQueue.h"
-
+#include <QMutexLocker>
 FrameQueue::FrameQueue()
 {	 
 }
@@ -13,10 +13,9 @@ bool FrameQueue::enQueue(const AVFrame* frame)
 	if (ret < 0)
 		return false;
 	p->opaque = (void *)new double(*(double*)p->opaque); //上一个指向的是一个局部的变量，这里重新分配pts空间
-	mutex.lock();
+	QMutexLocker locker(&mutex);
 	queue.push(p);	
-	cond.wakeOne();
-	mutex.unlock();	
+	cond.wakeOne();	
 	return true;
 }
 
@@ -24,7 +23,7 @@ AVFrame * FrameQueue::deQueue()
 {
 	bool ret = true;
 	AVFrame *tmp;
-	mutex.lock();
+	QMutexLocker locker(&mutex);
 	while (true)
 	{
 		if (!queue.empty())
@@ -39,7 +38,7 @@ AVFrame * FrameQueue::deQueue()
 			cond.wait(&mutex);		
 		}
 	}
-	mutex.unlock();
+	
 	return tmp;
 }
 

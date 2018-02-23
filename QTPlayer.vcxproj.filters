@@ -91,24 +91,6 @@
     <ClCompile Include="DisplayMediaTimer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_TitleBar.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_TitleBar.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="TitleBar.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_MySlider.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_MySlider.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="MySlider.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\Debug\moc_ReadPacketsThread.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
@@ -119,15 +101,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="QImageHandler.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_menus.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_menus.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="menus.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -153,19 +126,10 @@
     <CustomBuild Include="DisplayMediaTimer.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="TitleBar.h">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="MySlider.h">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
     <CustomBuild Include="ReadPacketsThread.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="Audio.h">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="menus.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>

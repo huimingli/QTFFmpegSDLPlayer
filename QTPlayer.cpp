@@ -1,9 +1,7 @@
 #include "QTPlayer.h"
 #include "DisplayMediaTimer.h"
-#include "TitleBar.h"
 #include <QVBoxLayout>
 #include<QFileDialog>
-#include "menus.h"
 #include<QMessageBox>
 #include "ImageFilter.h"
 #include "Media.h"

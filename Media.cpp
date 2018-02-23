@@ -22,19 +22,17 @@ Media *  Media::config() {
 	// Open input file
 	close();
  
-	mutex.lock();
+	QMutexLocker locker(&mutex);
 	char errorbuf[1024] = { 0 };
 	int ret = avformat_open_input(&pFormatCtx, filename, 0, 0);
 	if (ret < 0) {
 		av_strerror(ret, errorbuf, sizeof(errorbuf));
 		printf("open %s failed: %s\n", filename, errorbuf);
-		mutex.unlock();
         return nullptr;
 	}
 	
 
 	if (avformat_find_stream_info(pFormatCtx, nullptr) < 0) {
-		mutex.unlock();
 		return nullptr;
 	}
 
@@ -53,14 +51,12 @@ Media *  Media::config() {
 	}
 
 	if (audio->getStreamIndex() < 0 || video->getStreamIndex() < 0) {
-		mutex.unlock();
 		return nullptr;
 	}
 
 	// Fill audio state
 	AVCodec *pCodec = avcodec_find_decoder(pFormatCtx->streams[audio->getStreamIndex()]->codec->codec_id);
 	if (!pCodec) {
-		mutex.unlock();
 		return nullptr;
 	}
  
@@ -69,7 +65,6 @@ Media *  Media::config() {
 	audio->setAVCodecContext(avcodec_alloc_context3(pCodec));
 	
 	if (avcodec_copy_context(audio->getAVCodecContext(), pFormatCtx->streams[audio->getStreamIndex()]->codec) != 0) {
-		mutex.unlock();
 		return nullptr;
 	}
 
@@ -78,7 +73,6 @@ Media *  Media::config() {
 	// Fill video state
 	AVCodec *pVCodec = avcodec_find_decoder(pFormatCtx->streams[video->getStreamIndex()]->codec->codec_id);
 	if (!pVCodec) {
-		mutex.unlock();
 		return nullptr;
 	}
 
@@ -86,7 +80,6 @@ Media *  Media::config() {
 	 
 	video->setAVCodecCotext(avcodec_alloc_context3(pVCodec));
 	if (avcodec_copy_context(video->getAVCodecCotext(), pFormatCtx->streams[video->getStreamIndex()]->codec) != 0) {
-		mutex.unlock();
 		return nullptr;
 	}
 	
@@ -97,7 +90,6 @@ Media *  Media::config() {
 	audio->audioPlay();
 	ReadPacketsThread::getInstance()->setPlaying(true);
 	DisplayMediaTimer::getInstance()->setPlay(true);
-	mutex.unlock();
 	return this;
 }
 
@@ -109,6 +101,9 @@ Media * Media::setMediaFile(const char * filename)
 
 bool Media::checkMediaSizeValid()
 {
+	if (this->audio == nullptr || this->video == nullptr) {
+		return true;
+	}
 	Uint32 audioSize = this->audio->getAudioQueueSize();
 	Uint32 videoSize = this->video->getVideoQueueSize();
 	return (audioSize> MAX_AUDIOQ_SIZE || videoSize> MAX_VIDEOQ_SIZE);
@@ -141,15 +136,14 @@ void Media::startAudioPlay()
 
 AVFormatContext * Media::getAVFormatContext()
 {
-	mutex.lock();
+	QMutexLocker locker(&mutex);
 	AVFormatContext * p = pFormatCtx;	
-	mutex.unlock();
 	return p;
 }
 
 void Media::close()
 {
-	mutex.lock();
+	QMutexLocker locker(&mutex);
 	audio->audioClose();	
 	audio->clearPacket();
 	video->clearFrames(); 
@@ -168,18 +162,20 @@ void Media::close()
 	}
 	ReadPacketsThread::getInstance()->setPlaying(false);
 	DisplayMediaTimer::getInstance()->setPlay(false);
-	mutex.unlock();	
+ 
 }
 
 Media::~Media()
 {
-	if (audio != nullptr)
+	QMutexLocker locker(&mutex);
+	if (audio != nullptr){
 		delete audio;
-	if (video != nullptr)
-		delete video;	 
-}
-
-bool Media::seek(float pos) {
-	  
-	return false;
+		audio = nullptr;
+	}
+		
+	if (video != nullptr) {
+        delete video;	
+		video = nullptr;
+	}
+		 
 }

@@ -1,5 +1,6 @@
 #include "PacketQueue.h"
 #include <iostream>
+#include <QMutexLocker>
 static bool isExit = false;
 PacketQueue::PacketQueue()
 {
@@ -7,18 +8,16 @@ PacketQueue::PacketQueue()
 }
 
 PacketQueue::~PacketQueue() {
-	mutex.lock();
+	QMutexLocker locker(&mutex);
 	isExit = true;	 
-	mutex.unlock();
 }
 
 bool PacketQueue::enQueue(const AVPacket packet)
 {
-	mutex.lock();
+	QMutexLocker locker(&mutex);
 	queue.push(packet);
 	size += packet.size;
 	cond.wakeOne();
-	mutex.unlock();
 	return true;
 }
 
@@ -27,11 +26,10 @@ AVPacket PacketQueue::deQueue()
 	bool ret = false;
 	AVPacket pkt;
 	
-	if (isExit) {
-		
-		return pkt;
-	}
-	mutex.lock();
+	//if (isExit) {	
+	//	return pkt;
+	//}
+	QMutexLocker locker(&mutex);
 	 
 	while (true)
 	{
@@ -48,13 +46,13 @@ AVPacket PacketQueue::deQueue()
 			cond.wait(&mutex);
 		} 
 	}
-	mutex.unlock();
 	return pkt;
 }
 
 Uint32 PacketQueue::getPacketSize()
 {
-	return size;
+	QMutexLocker locker(&mutex);
+  	return size;
 }
 
 void PacketQueue::queueFlush() {
