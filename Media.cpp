@@ -24,6 +24,7 @@ static double r2d(AVRational r)
 Media::Media()
 {
 	av_register_all();//注册ffmpeg所有组件
+	avformat_network_init();//注册网络组件
 	pFormatCtx = nullptr;
 	audio = new Audio;
 	video = new Video;

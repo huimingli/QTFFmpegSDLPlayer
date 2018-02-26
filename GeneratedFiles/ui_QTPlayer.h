@@ -50,7 +50,7 @@ public:
         if (QTPlayerClass->objectName().isEmpty())
             QTPlayerClass->setObjectName(QStringLiteral("QTPlayerClass"));
         QTPlayerClass->resize(800, 600);
-        QTPlayerClass->setStyleSheet(QString::fromUtf8("QPushButton:!hover\n"
+        QTPlayerClass->setStyleSheet(QString::fromUtf8("#openButton:!hover\n"
 "{\n"
 "    background-color: qlineargradient(spread:pad,x1:0,y1:0,x2:0,y2:1,stop:0 rgba(120, 120, 120, 255),stop:0.495      rgba(39, 39, 39, 255),stop:0.505 rgba(39, 39, 39, 255),stop:1 rgba(120, 120, 120, 255));\n"
 "    border:none;\n"
@@ -58,7 +58,7 @@ public:
 "	color: rgb(255, 255, 255);\n"
 "	font: 75 12pt \"\351\273\221\344\275\223\";\n"
 "}\n"
-"QPushButton:hover\n"
+"#openButton:hover\n"
 "{\n"
 "    background-color: qlineargradient(spread:pad,x1:0,y1:0,x2:0,y2:1,stop:0 rgba(39, 39, 39, 255),stop:0.495      rgba(120, 120, 120, 255),stop:0.505 rgba(120, 120, 120, 255),stop:1 rgba(39, 39, 39, 255));\n"
 "    border:none;\n"

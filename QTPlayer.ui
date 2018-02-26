@@ -14,7 +14,7 @@
    <string>QTPlayer</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">QPushButton:!hover
+   <string notr="true">#openButton:!hover
 {
     background-color: qlineargradient(spread:pad,x1:0,y1:0,x2:0,y2:1,stop:0 rgba(120, 120, 120, 255),stop:0.495      rgba(39, 39, 39, 255),stop:0.505 rgba(39, 39, 39, 255),stop:1 rgba(120, 120, 120, 255));
     border:none;
@@ -22,7 +22,7 @@
 	color: rgb(255, 255, 255);
 	font: 75 12pt &quot;黑体&quot;;
 }
-QPushButton:hover
+#openButton:hover
 {
     background-color: qlineargradient(spread:pad,x1:0,y1:0,x2:0,y2:1,stop:0 rgba(39, 39, 39, 255),stop:0.495      rgba(120, 120, 120, 255),stop:0.505 rgba(120, 120, 120, 255),stop:1 rgba(39, 39, 39, 255));
     border:none;

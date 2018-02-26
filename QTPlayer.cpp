@@ -7,6 +7,8 @@
 #include "Media.h"
 #include "ReadPacketsThread.h"
 #include <QContextMenuEvent>
+#include <QInputDialog>
+ 
 static bool isPressSlider = false;
 static bool isPlay = false;
 QTPlayer::QTPlayer(QWidget *parent)
@@ -31,15 +33,17 @@ QTPlayer::QTPlayer(QWidget *parent)
 	upDownMirrorAction = new QAction(this);
 	rgbAction = new QAction(this);
 	grayAction = new QAction(this);
+	netAddressAction = new QAction(this);
 	leftRightMirrorAction->setText(QString::fromLocal8Bit("左右镜像"));
 	upDownMirrorAction->setText(QString::fromLocal8Bit("上下镜像"));
 	rgbAction->setText(QString::fromLocal8Bit("彩色"));
 	grayAction->setText(QString::fromLocal8Bit("黑白"));
-	
+	netAddressAction->setText(QString::fromLocal8Bit("网络串流"));
 	connect(leftRightMirrorAction, &QAction::triggered, this, &QTPlayer::mirrorLeftAndRight);
 	connect(upDownMirrorAction, &QAction::triggered, this, &QTPlayer::mirrorUpAndDown);
 	connect(rgbAction, &QAction::triggered, this, &QTPlayer::gray2Rgb);
 	connect(grayAction, &QAction::triggered, this, &QTPlayer::rgb2Gray);
+	connect(netAddressAction, &QAction::triggered, this, &QTPlayer::netAddressInput);
 	 
 	startTimer(40);
 	ReadPacketsThread *readPacketsThread = ReadPacketsThread::getInstance();
@@ -47,6 +51,41 @@ QTPlayer::QTPlayer(QWidget *parent)
 
 	Media::getInstance()->video->start();
 	play();
+}
+
+void QTPlayer::netAddressInput() {
+	bool ok = FALSE;
+ 
+	QString text = QInputDialog::getText( this,
+		QString::fromLocal8Bit("网络流"),
+		QString::fromLocal8Bit("请输入地址"),
+		QLineEdit::Normal, QString::null, &ok);
+	if (ok&&!text.isEmpty()) {
+		openNetAddressVideo(text);
+	}
+		 
+	else
+		;// 用户按下Cancel
+
+}
+
+void QTPlayer::openNetAddressVideo(QString address)
+{
+	std::string file = address.toLocal8Bit().data();//防止有中文
+	Media *media = Media::getInstance()
+		->setMediaFile(file.c_str())
+		->config(); 
+	setWindowTitle(address);
+	int total = Media::getInstance()->totalMs;
+	ui.totalHour->setText(QString::number((int)(Media::getInstance()->totalMs / 1000 / 60 / 60)) + ":");//计算视频总的时分秒
+	ui.totalMinute->setText(QString::number((int)(Media::getInstance()->totalMs / 1000 / 60) % 60) + ":");
+	ui.totalSecond->setText(QString::number((int)(Media::getInstance()->totalMs / 1000) % 60 % 60));
+	isPlay = false;
+	play();
+	float pos = 0;
+	pos = (float)ui.volumeSlider->value() / (float)(ui.volumeSlider->maximum() + 1);
+	if (Media::getInstance()->getAVFormatContext())
+		Media::getInstance()->audio->setVolume(pos*SDL_MIX_MAXVOLUME);//初始化音量为最大音量的一半
 }
 
 //************************************
@@ -63,6 +102,7 @@ void QTPlayer::contextMenuEvent(QContextMenuEvent *event) {
 	popMenu->addAction(upDownMirrorAction);
 	popMenu->addAction(rgbAction);
 	popMenu->addAction(grayAction);
+	popMenu->addAction(netAddressAction);
 
 	//菜单出现的位置为当前鼠标的位置
 	popMenu->exec(QCursor::pos());

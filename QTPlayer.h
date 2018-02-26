@@ -17,6 +17,8 @@ public:
 	void mirrorUpAndDown();
 	void gray2Rgb();
 	void rgb2Gray();
+	void netAddressInput();
+	void openNetAddressVideo(QString address);
 	void mouseDoubleClickEvent(QMouseEvent * event);
 	void mouseMoveEvent(QMouseEvent *event);
 public slots:
@@ -39,5 +41,6 @@ private:
 	QAction *upDownMirrorAction;
 	QAction *rgbAction;
 	QAction *grayAction;
+	QAction *netAddressAction;
 	Ui::QTPlayerClass ui;
 };
