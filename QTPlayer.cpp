@@ -25,6 +25,8 @@ QTPlayer::QTPlayer(QWidget *parent)
 		ReadPacketsThread::getInstance(),//槽接收的对象
 		SLOT(receivePos(float))//槽
 	);
+	setMinimumWidth(400);
+	setMinimumHeight(300);
 	bottomAnimation = new QPropertyAnimation(ui.bottemWidget, "geometry");
 	setMouseTracking(true);
 	ui.openGLWidget->setMouseTracking(true);
@@ -154,12 +156,21 @@ void QTPlayer::openVideoFile() {
 	if (fileName.isEmpty()) {
 		return;
 	}
-
+	QStringList titles = fileName.split("/");
+	QString postfix = titles.constLast().split(".").last();
+	if (postfix != QString::fromLocal8Bit("mp4") 
+		&& postfix != QString::fromLocal8Bit("rmvb")
+		&& postfix != QString::fromLocal8Bit("flv")
+		&& postfix != QString::fromLocal8Bit("avi")
+		&& postfix != QString::fromLocal8Bit("mkv")
+		) {
+		return;
+	}
 	std::string file = fileName.toLocal8Bit().data();//防止有中文
 	Media *media = Media::getInstance()
 		->setMediaFile(file.c_str())
 		->config();
-	QStringList titles = fileName.split("/");
+
 	setWindowTitle(titles.constLast());
 	int total =Media::getInstance()->totalMs;
 	ui.totalHour->setText(QString::number((int)(Media::getInstance()->totalMs / 1000 / 60 / 60)) + ":");//计算视频总的时分秒
